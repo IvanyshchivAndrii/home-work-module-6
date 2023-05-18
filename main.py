@@ -19,6 +19,7 @@ TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", 
 TRANSLIT_DICT = {}
 
 
+
 def normalize(path):
     p = Path(path)
 
@@ -28,10 +29,12 @@ def normalize(path):
 
     for name in p.iterdir():
         if name.is_file():
-            name.rename(path + '/' + name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix)
+            name.rename(os.path.join(path, name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix))
+            # name.rename(path + '/' + name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix)
         elif name.is_dir():
             if name.name not in FOLDERS_NAMES:
-                name.rename(path + '/' + name.name.translate(TRANSLIT_DICT))
+                name.rename(os.path.join(path, name.name.translate(TRANSLIT_DICT)))
+                # name.rename(path + '/' + name.name.translate(TRANSLIT_DICT))
 
 
 def sorted_files(path):
@@ -79,22 +82,22 @@ def replace_file(path):
             if folder == 'archive':
                 for file in split_file[folder]:
                     if folder not in folder_list:
-                        os.mkdir(path + '/' + folder)
-                        shutil.unpack_archive(file, path + '/' + folder + '/' + file.name.replace(file.suffix, ''))
-                        shutil.move(file, path + '/' + folder)
+                        os.mkdir(os.path.join(path, folder))
+                        shutil.unpack_archive(file, os.path.join(path, folder, file.name.replace(file.suffix, '')))
+                        shutil.move(file, os.path.join(path, folder))
                         folder_list.append(folder)
                     else:
-                        shutil.unpack_archive(file, path + '/' + folder + '/' + file.name.replace(file.suffix, ''))
-                        shutil.move(file, path + '/' + folder)
+                        shutil.unpack_archive(file, os.path.join(path, folder, file.name.replace(file.suffix, '')))
+                        shutil.move(file, os.path.join(path, folder))
 
             else:
                 for file in split_file[folder]:
                     if folder not in folder_list:
-                        os.mkdir(path + '/' + folder)
-                        shutil.move(file, path + '/' + folder)
+                        os.mkdir(os.path.join(path, folder))
+                        shutil.move(file, os.path.join(path, folder))
                         folder_list.append(folder)
                     else:
-                        shutil.move(file, path + '/' + folder)
+                        shutil.move(file, os.path.join(path, folder))
 
 
 def main(path):
@@ -106,7 +109,7 @@ def main(path):
             if dir_obj.is_file():
                 replace_file(path)
             elif dir_obj.is_dir() and dir_obj.name not in FOLDERS_NAMES:
-                main(path + '/' + dir_obj.name)
+                main(os.path.join(path, dir_obj.name))
     except FileNotFoundError as e:
         print(f'{e}. Try to write correct path')
 
