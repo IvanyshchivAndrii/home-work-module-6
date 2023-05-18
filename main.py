@@ -30,11 +30,9 @@ def normalize(path):
     for name in p.iterdir():
         if name.is_file():
             name.rename(os.path.join(path, name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix))
-            # name.rename(path + '/' + name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix)
         elif name.is_dir():
             if name.name not in FOLDERS_NAMES:
                 name.rename(os.path.join(path, name.name.translate(TRANSLIT_DICT)))
-                # name.rename(path + '/' + name.name.translate(TRANSLIT_DICT))
 
 
 def sorted_files(path):
