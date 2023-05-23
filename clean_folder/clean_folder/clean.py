@@ -13,11 +13,13 @@ FOLDERS_NAMES = ('images', 'video', 'documents', 'music', 'archive', 'other_file
 
 CYRILLIC_SYMBOLS = r"абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
 TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
-               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g", "_",  "_", "_", "_",
-               "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_",
+               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g", "_", "_", "_",
+               "_",
+               "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_",
+               "_",
                "_", "_", "_", "_", "_", "_", "_")
 TRANSLIT_DICT = {}
-
+PATH = sys.argv[1]
 
 
 def normalize(path):
@@ -29,7 +31,8 @@ def normalize(path):
 
     for name in p.iterdir():
         if name.is_file():
-            name.rename(os.path.join(path, name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix))
+            name.rename(
+                os.path.join(path, name.name[:name.name.index(name.suffix)].translate(TRANSLIT_DICT) + name.suffix))
         elif name.is_dir():
             if name.name not in FOLDERS_NAMES:
                 name.rename(os.path.join(path, name.name.translate(TRANSLIT_DICT)))
@@ -98,7 +101,7 @@ def replace_file(path):
                         shutil.move(file, os.path.join(path, folder))
 
 
-def main(path):
+def clean_folder(path):
     try:
         p = Path(path)
         delete_empty_folder(path)
@@ -107,16 +110,17 @@ def main(path):
             if dir_obj.is_file():
                 replace_file(path)
             elif dir_obj.is_dir() and dir_obj.name not in FOLDERS_NAMES:
-                main(os.path.join(path, dir_obj.name))
+                clean_folder(os.path.join(path, dir_obj.name))
     except FileNotFoundError as e:
         print(f'{e}. Try to write correct path')
 
 
+def main():
+    clean_folder(PATH)
+
+
 if __name__ == '__main__':
     try:
-        path = sys.argv[1]
-        main(path)
+        main()
     except IndexError:
         print('Не бавтеся!! Введіть шлях до файлу, як аргумент командного рядка!!!')
-
-
