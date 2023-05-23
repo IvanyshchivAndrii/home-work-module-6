@@ -98,7 +98,7 @@ def replace_file(path):
                         shutil.move(file, os.path.join(path, folder))
 
 
-def main(path):
+def clean_folder(path):
     try:
         p = Path(path)
         delete_empty_folder(path)
@@ -115,7 +115,7 @@ def main(path):
 if __name__ == '__main__':
     try:
         path = sys.argv[1]
-        main(path)
+        clean_folder(path)
     except IndexError:
         print('Не бавтеся!! Введіть шлях до файлу, як аргумент командного рядка!!!')
 
