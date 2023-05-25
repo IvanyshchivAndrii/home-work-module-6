@@ -120,7 +120,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except IndexError:
-        print('Не бавтеся!! Введіть шлях до файлу, як аргумент командного рядка!!!')
+    main()
