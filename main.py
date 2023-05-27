@@ -21,7 +21,7 @@ TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", 
 TRANSLIT_DICT = {}
 
 
-# PATH = sys.argv[1]
+PATH = sys.argv[1]
 
 
 def normalize(path):
@@ -60,7 +60,7 @@ def sorted_files(path):
             music_list.append(file)
         elif file.suffix.lower() in ARCHIVE:
             archive_list.append(file)
-        elif file.is_file():
+        elif file.is_file() and path + '\\archive\\' not in str(file):
             other_files_list.append(file)
 
     return {
@@ -118,11 +118,9 @@ def clean_folder(path):
         print(f'{e}. Try to write correct path')
 
 
-clean_folder(r'C:\Users\sadBOY\Desktop\Green1')
-
-# def main():
-#     clean_folder(PATH)
+def main():
+    clean_folder(PATH)
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
