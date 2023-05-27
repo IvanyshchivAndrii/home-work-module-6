@@ -19,7 +19,9 @@ TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", 
                "_",
                "_", "_", "_", "_", "_", "_", "_")
 TRANSLIT_DICT = {}
-PATH = sys.argv[1]
+
+
+# PATH = sys.argv[1]
 
 
 def normalize(path):
@@ -45,6 +47,7 @@ def sorted_files(path):
     documents_list = []
     music_list = []
     archive_list = []
+    other_files_list = []
 
     for file in path_to_dir.glob('**/*'):
         if file.suffix.lower() in IMAGES:
@@ -57,6 +60,8 @@ def sorted_files(path):
             music_list.append(file)
         elif file.suffix.lower() in ARCHIVE:
             archive_list.append(file)
+        elif file.is_file():
+            other_files_list.append(file)
 
     return {
         'images': images_list,
@@ -64,6 +69,7 @@ def sorted_files(path):
         'documents': documents_list,
         'music': music_list,
         'archive': archive_list,
+        'other_files': other_files_list
     }
 
 
@@ -88,11 +94,9 @@ def replace_file(path):
             for file in files_list:
                 if folder_name not in folder_list:
                     os.mkdir(os.path.join(path, folder_name))
-                    shutil.unpack_archive(file, os.path.join(path, folder_name, file.name.replace(file.suffix, '')))
                     shutil.move(file, os.path.join(path, folder_name))
                     folder_list.append(folder_name)
-                else:
-                    shutil.unpack_archive(file, os.path.join(path, folder_name, file.name.replace(file.suffix, '')))
+                elif not Path(os.path.join(path, folder_name, file.name)).exists():
                     shutil.move(file, os.path.join(path, folder_name))
 
         else:
@@ -101,25 +105,33 @@ def replace_file(path):
                     os.mkdir(os.path.join(path, folder_name))
                     shutil.move(file, os.path.join(path, folder_name))
                     folder_list.append(folder_name)
-                else:
+                elif not Path(os.path.join(path, folder_name, file.name)).exists():
                     shutil.move(file, os.path.join(path, folder_name))
+
+
+def unpack_archive(path):
+    if Path(os.path.join(path, 'archive')).exists():
+        p = Path(os.path.join(path, 'archive'))
+        for archives in p.iterdir():
+            if not Path(os.path.join(path, 'archive', archives.name.replace(archives.suffix, ''))).exists():
+                shutil.unpack_archive(archives, os.path.join(path, 'archive', archives.name.replace(archives.suffix, '')))
 
 
 def clean_folder(path):
     try:
-        p = Path(path)
+        replace_file(path)
         normalize(path)
-        for dir_obj in p.iterdir():
-            if dir_obj.name not in FOLDERS_NAMES:
-                replace_file(path)
         delete_empty_folder(path)
+        unpack_archive(path)
     except FileNotFoundError as e:
         print(f'{e}. Try to write correct path')
 
 
-def main():
-    clean_folder(PATH)
+clean_folder(r'C:\Users\sadBOY\Desktop\Green1')
+
+# def main():
+#     clean_folder(PATH)
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
