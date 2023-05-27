@@ -90,23 +90,13 @@ def replace_file(path):
     p = Path(path)
     folder_list = [item.name for item in p.iterdir() if item.is_dir()]
     for folder_name, files_list in split_file.items():
-        if folder_name == 'archive':
-            for file in files_list:
-                if folder_name not in folder_list:
-                    os.mkdir(os.path.join(path, folder_name))
-                    shutil.move(file, os.path.join(path, folder_name))
-                    folder_list.append(folder_name)
-                elif not Path(os.path.join(path, folder_name, file.name)).exists():
-                    shutil.move(file, os.path.join(path, folder_name))
-
-        else:
-            for file in files_list:
-                if folder_name not in folder_list:
-                    os.mkdir(os.path.join(path, folder_name))
-                    shutil.move(file, os.path.join(path, folder_name))
-                    folder_list.append(folder_name)
-                elif not Path(os.path.join(path, folder_name, file.name)).exists():
-                    shutil.move(file, os.path.join(path, folder_name))
+        for file in files_list:
+            if folder_name not in folder_list:
+                os.mkdir(os.path.join(path, folder_name))
+                shutil.move(file, os.path.join(path, folder_name))
+                folder_list.append(folder_name)
+            elif not Path(os.path.join(path, folder_name, file.name)).exists():
+                shutil.move(file, os.path.join(path, folder_name))
 
 
 def unpack_archive(path):
@@ -114,7 +104,8 @@ def unpack_archive(path):
         p = Path(os.path.join(path, 'archive'))
         for archives in p.iterdir():
             if not Path(os.path.join(path, 'archive', archives.name.replace(archives.suffix, ''))).exists():
-                shutil.unpack_archive(archives, os.path.join(path, 'archive', archives.name.replace(archives.suffix, '')))
+                shutil.unpack_archive(archives,
+                                      os.path.join(path, 'archive', archives.name.replace(archives.suffix, '')))
 
 
 def clean_folder(path):
