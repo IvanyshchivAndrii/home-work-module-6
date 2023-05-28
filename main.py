@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 import shutil
 import os
+from random import randint
 
 IMAGES = ('.jpeg', '.png', '.jpg', '.svg')
 VIDEO = ('.avi', '.mp4', '.mov', '.mkv')
@@ -19,7 +20,6 @@ TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", 
                "_",
                "_", "_", "_", "_", "_", "_", "_")
 TRANSLIT_DICT = {}
-
 
 PATH = sys.argv[1]
 
@@ -40,7 +40,18 @@ def normalize(path):
                 name.rename(os.path.join(path, name.name.translate(TRANSLIT_DICT)))
 
 
+def rename_same_file(path):
+    path_to_dir = Path(path)
+    file_names_list = [file.name for file in path_to_dir.glob('**/*')]
+    for file in path_to_dir.glob('**/*'):
+        if file.name in file_names_list:
+            new_name = file.with_name(str(randint(1000, 9999)) + '_' + file.name)
+            file_names_list.append(new_name.name)
+            file.replace(new_name)
+
+
 def sorted_files(path):
+    rename_same_file(path)
     path_to_dir = Path(path)
     images_list = []
     videos_list = []
