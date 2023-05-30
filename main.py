@@ -44,7 +44,7 @@ def rename_same_file(path):
     path_to_dir = Path(path)
     file_names_list = [file.name for file in path_to_dir.glob('**/*')]
     for file in path_to_dir.glob('**/*'):
-        if file.name in file_names_list:
+        if file_names_list.count(file.name) >= 2:
             new_name = file.with_name(str(randint(1000, 9999)) + '_' + file.name)
             file_names_list.append(new_name.name)
             file.replace(new_name)
@@ -61,13 +61,13 @@ def sorted_files(path):
     other_files_list = []
 
     for file in path_to_dir.glob('**/*'):
-        if file.suffix.lower() in IMAGES:
+        if file.suffix.lower() in IMAGES and path + '\\archive\\' not in str(file):
             images_list.append(file)
-        elif file.suffix.lower() in VIDEO:
+        elif file.suffix.lower() in VIDEO and path + '\\archive\\' not in str(file):
             videos_list.append(file)
-        elif file.suffix.lower() in DOCUMENTS:
+        elif file.suffix.lower() in DOCUMENTS and path + '\\archive\\' not in str(file):
             documents_list.append(file)
-        elif file.suffix.lower() in MUSIC:
+        elif file.suffix.lower() in MUSIC and path + '\\archive\\' not in str(file):
             music_list.append(file)
         elif file.suffix.lower() in ARCHIVE:
             archive_list.append(file)
